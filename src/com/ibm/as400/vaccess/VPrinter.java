@@ -531,7 +531,7 @@ Returns the index of the specified child for the details.
 The details children are the spooled files (VOutput objects)
 on the printer.
 
-@param  child   The details child.
+@param  detailsChild   The details child.
 @return                The index, or -1 if the child is not found
                        in the details.
 **/

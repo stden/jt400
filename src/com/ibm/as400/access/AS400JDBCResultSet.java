@@ -87,7 +87,7 @@ regardless of the concurrency set in the statement:
 
 <p>In the following case, result sets are always read only 
 regardless of the concurrency set in the statement if connecting 
-to a server running OS/400 V4R5 or a previous release:
+to a server running V4R5 or a previous release of OS/400:
 <ul>
 <li>SELECT statements which do not specify FOR UPDATE
 </ul>
@@ -2441,7 +2441,7 @@ public class AS400JDBCResultSet implements ResultSet
     
     <p>This can also be used to get values from columns 
     with other types.  The values are returned in their
-    native i5/OS format.  This is not supported for
+    native OS/400 format.  This is not supported for
     result sets returned by a DatabaseMetaData object.
     
     @param  columnIndex     The column index (1-based).
@@ -2496,7 +2496,7 @@ public class AS400JDBCResultSet implements ResultSet
     
     <p>This can also be used to get values from columns 
     with other types.  The values are returned in their
-    native i5/OS format.  This is not supported for
+    native OS/400 format.  This is not supported for
     result sets returned by a DatabaseMetaData object.
     
     @param  columnName  The column name.
@@ -3972,7 +3972,7 @@ public class AS400JDBCResultSet implements ResultSet
     DB2 UDB for iSeries does not support arrays.
     
     @param  columnIndex   The column index (1-based).
-    @param  columnValue   The column value or null if the value is SQL NULL.
+    @return               The column value or null if the value is SQL NULL.
     
     @exception  SQLException    Always thrown because DB2
                                 UDB for iSeries does not support arrays.
@@ -3993,8 +3993,8 @@ public class AS400JDBCResultSet implements ResultSet
     To perform a case-sensitive search use a quoted String
     for columnName as in: ResultSet.updateArray("\"MixedCase\"", columnValue).
     
-    @param  columnName   The column name.
-    @param  columnValue  The column value or null if the value is SQL NULL.
+    @param  columnIndex   The column name.
+    @return               The column value or null if the value is SQL NULL.
     
     @exception  SQLException    Always thrown because DB2
                                 UDB for iSeries does not support arrays.
@@ -4245,7 +4245,7 @@ public class AS400JDBCResultSet implements ResultSet
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIT, but DB2 for OS/400
     // does not support that.
     //
     public void updateBoolean (int columnIndex, boolean columnValue)
@@ -4280,7 +4280,7 @@ public class AS400JDBCResultSet implements ResultSet
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIT, but DB2 for OS/400
     // does not support that.
     //
     public void updateBoolean (String columnName, boolean columnValue)
@@ -4367,7 +4367,7 @@ public class AS400JDBCResultSet implements ResultSet
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL TINYINT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL TINYINT, but DB2 for OS/400
     // does not support that.
     //
     public void updateByte (int columnIndex, byte columnValue)
@@ -4401,7 +4401,7 @@ public class AS400JDBCResultSet implements ResultSet
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL TINYINT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL TINYINT, but DB2 for OS/400
     // does not support that.
     //
     public void updateByte (String columnName, byte columnValue)
@@ -4850,7 +4850,7 @@ public class AS400JDBCResultSet implements ResultSet
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIGINT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIGINT, but DB2 for OS/400
     // does not support that until V4R5.
     //
     public void updateLong (int columnIndex, long columnValue)
@@ -4888,7 +4888,7 @@ public class AS400JDBCResultSet implements ResultSet
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIGINT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIGINT, but DB2 for OS/400
     // does not support that until V4R5.
     //
     public void updateLong (String columnName, long columnValue)
@@ -5109,6 +5109,7 @@ public class AS400JDBCResultSet implements ResultSet
     @param  columnIndex     The column index (1-based).
     @param  columnValue     The column value or null to update
                                       the value to SQL NULL.
+    @return                 The parameter value or 0 if the value is SQL NULL.
         
     @exception  SQLException    Always thrown because DB2
                                 UDB for iSeries does not support REFs.
@@ -5129,9 +5130,10 @@ public class AS400JDBCResultSet implements ResultSet
     To perform a case-sensitive search use a quoted String
     for columnName as in: ResultSet.updateRef("\"MixedCase\"", columnValue).
        
-    @param  columnName      The column name.
+    @param  columnIndex     The column name.
     @param  columnValue     The column value or null to update
                             the value to SQL NULL.
+    @return                 The parameter value or 0 if the value is SQL NULL.
         
     @exception  SQLException    Always thrown because DB2
                                 UDB for iSeries does not support REFs.

@@ -253,7 +253,7 @@ public class PasswordDialog extends Dialog
 
     /**
      Sets the user ID.
-     @param  userId  The user ID.
+     @param  userID  The user ID.
      **/
     public void setUserId(String userId)
     {

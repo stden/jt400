@@ -94,7 +94,7 @@ public abstract class HTMLList extends HTMLTagAttributes implements java.io.Seri
 
     /**
      *  Adds an HTML <i>list</i> to the HTMLList.
-     *  @param list The HTMLList.
+     *  @param item The HTMLList.
      **/
     public void addList(HTMLList list)
     {

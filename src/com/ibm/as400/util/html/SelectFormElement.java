@@ -531,7 +531,7 @@ public class SelectFormElement extends HTMLTagAttributes implements java.io.Seri
 
     /**
     *  Sets the control name of the select element.
-    *  @param name The control name.
+    *  @param The control name.
     *
     *  @exception PropertyVetoException If a change is vetoed.
     **/

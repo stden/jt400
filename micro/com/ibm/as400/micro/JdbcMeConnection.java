@@ -437,7 +437,7 @@ public class JdbcMeConnection implements java.sql.Connection
      *  <tr><td>*RR</td>  <td>TRANSACTION_SERIALIZABLE</td></tr>
      *  </table>
      *  
-     *  @param      isolation   The transaction isolation level.  Possible values are:
+     *  @param      level   The transaction isolation level.  Possible values are:
      *  <ul>
      *  <li>TRANSACTION_READ_UNCOMMITTED
      *  <li>TRANSACTION_READ_COMMITTED

@@ -25,7 +25,7 @@ The AS400JDBCXADataSource class represents a factory for
 AS400JDBCXAConnection objects.
 
 <p>
-This support is only available when connecting to servers running OS/400 V5R1 or later ori5/OS.
+This support is only available when connecting to servers running OS/400 V5R1 or later.
 
 <p>The following example creates an AS400JDBCXADataSource 
 object and creates a connection to the database.
@@ -117,7 +117,7 @@ to use for SSL communications with the server.
 
 
 /**
-Returns an XA connection to i5/OS.
+Returns an XA connection to OS/400.
    
 @return An XA connection.
 @exception SQLException If a database error occurs.
@@ -132,7 +132,7 @@ Returns an XA connection to i5/OS.
 
 
 /**
-Returns an XA connection to i5/OS.
+Returns an XA connection to OS/400.
 
 @param user The userid for the connection.
 @param password The password for the connection.

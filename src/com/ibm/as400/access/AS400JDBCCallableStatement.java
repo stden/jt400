@@ -201,13 +201,7 @@ implements CallableStatement
             // Cache all the parm names and numbers.
 
             Statement s = connection_.createStatement();
-            String catalogSeparator = "";                                                           //@74A Added a check for the naming used.  Need to use separator appropriate to naming.
-            if (connection_.getProperties().equals (JDProperties.NAMING, JDProperties.NAMING_SQL))  //@74A
-                catalogSeparator = ".";                                                             //@74A
-            else                                                                                    //@74A
-                catalogSeparator = "/";                                                             //@74A
-
-            ResultSet rs = s.executeQuery("SELECT SPECIFIC_NAME from QSYS2" + catalogSeparator + "SYSPROCS WHERE ROUTINE_SCHEMA = '" + sqlStatement_.getSchema() + //@74C
+            ResultSet rs = s.executeQuery("SELECT SPECIFIC_NAME from QSYS2.SYSPROCS WHERE ROUTINE_SCHEMA = '" + sqlStatement_.getSchema() + 
                                           "' AND ROUTINE_NAME = '" + sqlStatement_.getProcedure() + 
                                           "' AND IN_PARMS + OUT_PARMS + INOUT_PARMS = " + parameterCount_);
 
@@ -217,7 +211,7 @@ implements CallableStatement
 
             String specificName = rs.getString(1);
 
-            rs = s.executeQuery("SELECT PARAMETER_NAME, ORDINAL_POSITION FROM QSYS2" + catalogSeparator + "SYSPARMS WHERE " + //@74A
+            rs = s.executeQuery("SELECT PARAMETER_NAME, ORDINAL_POSITION FROM QSYS2.SYSPARMS WHERE " +
                                 " SPECIFIC_NAME = '" + specificName + "' AND SPECIFIC_SCHEMA = '" + sqlStatement_.getSchema() + "'");
 
             while(rs.next())
@@ -544,7 +538,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIT, but DB2 for OS/400
     // does not support that.
     //
     public boolean getBoolean(int parameterIndex)
@@ -619,7 +613,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIT, but DB2 for OS/400
     // does not support that.
     //
     public boolean getBoolean(String parameterName)
@@ -645,7 +639,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL TINYINT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL TINYINT, but DB2 for OS/400
     // does not support that.
     //
     public byte getByte(int parameterIndex)
@@ -718,7 +712,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL TINYINT, but DB2 for i5/OS 
+    // The spec defines this in terms of SQL TINYINT, but DB2 for OS/400
     // does not support that.
     //
     public byte getByte(String parameterName)
@@ -1305,7 +1299,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIGINT, but DB2 for i5/OS
+    // The spec defines this in terms of SQL BIGINT, but DB2 for OS/400
     // does not support that until V4R5.
     //
     public long getLong(int parameterIndex)
@@ -1388,7 +1382,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIGINT, but DB2 for i5/OS 
+    // The spec defines this in terms of SQL BIGINT, but DB2 for OS/400
     // does not support that until V4R5.
     //
     public long getLong(String parameterName)
@@ -1469,7 +1463,7 @@ implements CallableStatement
     This driver does not support the type map.
     
     @param  parameterIndex  The parameter index (1-based).
-    @param  typeMap            The type map.  This is not used.
+    @param  type            The type map.  This is not used.
     @return                 The parameter value or null if the value is SQL NULL.
     
     @exception  SQLException    If the statement is not open,
@@ -1517,7 +1511,7 @@ implements CallableStatement
     This driver does not support the type map.
         
     @param  parameterName   The parameter name.
-    @param  typeMap            The type map.  This is not used.
+    @param  type            The type map.  This is not used.
     @return                 The parameter value or null if the value is SQL NULL.
         
     @exception  SQLException    If the statement is not open,
@@ -1723,7 +1717,7 @@ implements CallableStatement
     Returns the value of an SQL CHAR or VARCHAR output
     parameter as a Java String object.
     
-    @param  parameterName  The parameter name.
+    @param  parameterIndex  The parameter name.
     @return                 The parameter value or null if the value is SQL NULL.
     
     @exception  SQLException    If the statement is not open,
@@ -2360,7 +2354,7 @@ implements CallableStatement
     Sets an input parameter to a BigDecimal value.  The driver converts
     this to an SQL NUMERIC value.
     
-    @param  parameterName  The parameter name.
+    @param  parameterIndex  The parameter index (1-based).
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
     
@@ -2389,7 +2383,7 @@ implements CallableStatement
     are available.  The driver converts this to an SQL VARBINARY
     value.
         
-    @param  parameterName  The parameter name.
+    @param  parameterIndex  The parameter index (1-based).
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
     @param  length          The number of bytes in the stream.
@@ -2429,7 +2423,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIT, but DB2 for i5/OS 
+    // The spec defines this in terms of SQL BIT, but DB2 for OS/400
     // does not support that.
     //
     public void setBoolean(String parameterName, boolean parameterValue) 
@@ -2459,7 +2453,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL TINYINT, but DB2 for i5/OS 
+    // The spec defines this in terms of SQL TINYINT, but DB2 for OS/400
     // does not support that.
     //
     public void setByte(String parameterName, byte parameterValue) 
@@ -2569,10 +2563,10 @@ implements CallableStatement
     calendar other than the default.  The driver converts this
     to an SQL DATE value.
         
-    @param  parameterName   The parameter name.
+    @param  parameterIndex  The parameter index (1-based).
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
-    @param  cal        The calendar.
+    @param  calendar        The calendar.
         
     @exception  SQLException    If the statement is not open,
                                 the index is not valid, the parameter
@@ -2691,7 +2685,7 @@ implements CallableStatement
     //
     // Implementation note:
     //
-    // The spec defines this in terms of SQL BIGINT, but DB2 for i5/OS 
+    // The spec defines this in terms of SQL BIGINT, but DB2 for OS/400
     // does not support that until V4R5.
     //
     public void setLong(String parameterName, long parameterValue) 
@@ -2800,7 +2794,7 @@ implements CallableStatement
     @param  parameterName   The parameter name.
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
-    @param  targetSqlType   The SQL type code defined in java.sql.Types.
+    @param  targetSQLType   The SQL type code defined in java.sql.Types.
     
     @exception  SQLException    If the statement is not open,
                                 the index is not valid,
@@ -2833,7 +2827,7 @@ implements CallableStatement
     @param  parameterName   The parameter name.
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
-    @param  targetSqlType   The SQL type code defined in java.sql.Types.
+    @param  targetSQLType   The SQL type code defined in java.sql.Types.
     @param  scale           The number of digits after the decimal
                             if sqlType is DECIMAL or NUMERIC.
     
@@ -2945,10 +2939,10 @@ implements CallableStatement
     other than the default.  The driver converts this to an SQL TIME
     value.
         
-    @param  parameterName   The parameter name.
+    @param  parameterIndex  The parameter index (1-based).
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
-    @param  cal        The calendar.
+    @param  calendar        The calendar.
         
     @exception  SQLException    If the statement is not open,
                                 the index is not valid, the parameter
@@ -3003,10 +2997,10 @@ implements CallableStatement
     calendar other than the default.  The driver converts this to
     an SQL TIMESTAMP value.
         
-    @param  parameterName   The parameter name.
+    @param  parameterIndex  The parameter index (1-based).
     @param  parameterValue  The parameter value or null to set
                             the value to SQL NULL.
-    @param  cal        The calendar.
+    @param  calendar        The calendar.
         
     @exception  SQLException    If the statement is not open,
                                 the index is not valid, the parameter

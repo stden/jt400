@@ -839,7 +839,7 @@ Initializes the transient data.
 /**
 Indicates if the node is a leaf.
 
-@return  true if the node if a leaf; false otherwise.
+@param  true if the node if a leaf; false otherwise.
 **/
     public boolean isLeaf ()
     {

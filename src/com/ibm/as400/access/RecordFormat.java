@@ -776,8 +776,7 @@ public class RecordFormat implements Serializable
     for (int i=0; i<fieldDescriptions_.size(); ++i)
     {
       AS400DataType dt = ((FieldDescription)fieldDescriptions_.elementAt(i)).dataType_;
-//      if (dt instanceof AS400Text)
-      if (dt.getInstanceType() == AS400DataType.TYPE_TEXT)
+      if (dt instanceof AS400Text)
       {
         ((AS400Text)dt).setConverter(system);
       }

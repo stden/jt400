@@ -42,8 +42,7 @@ class Find extends WindowAdapter implements KeyListener {
 				    cancel;
     private boolean isClosed=false;
     private JCheckBox casebox,
-				      wrapbox,
-				      reverse;
+				      wrapbox;
     private JTextField input;
     private int index=0; // Our position in the text area
     private String search="";
@@ -78,14 +77,13 @@ class Find extends WindowAdapter implements KeyListener {
 		pnl.setLayout((gridbag));
 		GridBagConstraints c = new GridBagConstraints();
 
-		input = new JTextField(30);
+		input = new JTextField(20);
 		fnext = new JButton(ResourceBundleLoader_ct.getText("FindNext"));
 		fnext.addKeyListener(this); 
 		cancel = new JButton(ResourceBundleLoader_ct.getText("Cancel"));
 		cancel.addKeyListener(this);
 		casebox = new JCheckBox(ResourceBundleLoader_ct.getText("MatchCase"),true);
 		wrapbox = new JCheckBox(ResourceBundleLoader_ct.getText("WrapSearch"),true);
-		reverse = new JCheckBox(ResourceBundleLoader_ct.getText("Reverse"),false);
 
 		c.weightx = 0.0;
 		c.weighty = 0.0;
@@ -96,7 +94,7 @@ class Find extends WindowAdapter implements KeyListener {
 		pnl.add(input);
 	
 		c.fill=GridBagConstraints.BOTH;
-		c.gridheight = 2;
+		c.gridheight = 1;
 		c.gridwidth=GridBagConstraints.REMAINDER;
 		c.gridheight=GridBagConstraints.RELATIVE;
 
@@ -109,13 +107,15 @@ class Find extends WindowAdapter implements KeyListener {
 		    }
 		);
 
-		pnl.add(wrapbox);
-		pnl.add(casebox);
-		
 		c.gridwidth=GridBagConstraints.RELATIVE;
 		c.gridheight=GridBagConstraints.REMAINDER;
-		gridbag.setConstraints(reverse,c);
-		pnl.add(reverse);
+		gridbag.setConstraints(casebox,c);
+		pnl.add(wrapbox);
+
+		c.gridwidth=GridBagConstraints.RELATIVE;
+		c.gridheight=GridBagConstraints.REMAINDER;
+		gridbag.setConstraints(casebox,c);
+		pnl.add(casebox);
 	
 		c.gridheight = 2;
 		c.gridwidth=GridBagConstraints.REMAINDER;
@@ -133,7 +133,7 @@ class Find extends WindowAdapter implements KeyListener {
 		find.addWindowListener(this);
 	
 		//find.pack();
-		find.setSize(400,100);
+		find.setSize(300,100);
 		find.setVisible(true);
 		find.invalidate();
 		find.validate();
@@ -157,11 +157,7 @@ class Find extends WindowAdapter implements KeyListener {
 		} else if(search.length() == 0) {
 		    CommTrace.error(find,"Error","No String specified");
 		} else {
-			if(reverse.isSelected()) {
-				tmp = searchText.lastIndexOf(search,index-search.length());
-			} else {
-		    	tmp = searchText.indexOf(search,index+search.length());
-			}
+		    tmp = searchText.indexOf(search,index+search.length());
 	    
 		    if(tmp != -1) { // Search text found
 				ta.select(tmp,tmp+search.length());

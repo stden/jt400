@@ -969,8 +969,7 @@ public class Record implements Serializable
       for (int i=0; i<fieldDescriptions_.length; ++i)
       {
         AS400DataType dt = fieldDescriptions_[i].dataType_;
-//        if (dt instanceof AS400Text)
-        if (dt.getInstanceType() == AS400DataType.TYPE_TEXT)
+        if (dt instanceof AS400Text)
         {
           ((AS400Text)dt).setConverter(((AS400Text)dt).getConverter()); //@F0C
         }

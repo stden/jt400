@@ -847,12 +847,7 @@ need replies.
       }
     }
     int selectionCriteriaLength = selectionCriteria.length();
-    boolean v5r3OrGreater = system_.getVRM() >= JDUtilities.vrm530;     //@K1A
-    byte[] selectionInfo;                                               //@K1C
-    if(v5r3OrGreater)                                                   //@K1A
-        selectionInfo = new byte[84+selectionCriteriaLength];           //@K1A
-    else                                                                //@K1A
-        selectionInfo = new byte[80+selectionCriteriaLength];
+    byte[] selectionInfo = new byte[80+selectionCriteriaLength];
     text10.toBytes(listDirection_ ? NEXT : PREVIOUS, selectionInfo, 0);
     byte[] userStartingMessageKey = (userStartingMessageKey_ != null ? userStartingMessageKey_ : (listDirection_ ? OLDEST : NEWEST));
     byte[] workstationStartingMessageKey = (workstationStartingMessageKey_ != null ? workstationStartingMessageKey_ : userStartingMessageKey);
@@ -864,10 +859,7 @@ need replies.
     int offset = 44+selectionCriteriaLength;
     BinaryConverter.intToByteArray(offset, selectionInfo, 32); // offset of starting message keys
     BinaryConverter.intToByteArray(offset+8, selectionInfo, 36); // offset of identifiers
-    if(v5r3OrGreater)                                                                                   //@K1A
-        BinaryConverter.intToByteArray(8, selectionInfo, 40); // number of identifiers to return        //@K1A
-    else                                                                                                //@K1A
-        BinaryConverter.intToByteArray(7, selectionInfo, 40); // number of identifiers to return
+    BinaryConverter.intToByteArray(7, selectionInfo, 40); // number of identifiers to return
     //text10.toBytes(selectionCriteria_, selectionInfo, 44);
     conv.stringToByteArray(selectionCriteria, selectionInfo, 44);
     System.arraycopy(userStartingMessageKey, 0, selectionInfo, offset, 4);
@@ -879,8 +871,6 @@ need replies.
     BinaryConverter.intToByteArray(501, selectionInfo, offset+24); // Default reply
     BinaryConverter.intToByteArray(404, selectionInfo, offset+28); // Message help with replacement data and formattting characters
     BinaryConverter.intToByteArray(101, selectionInfo, offset+32); // Alert option
-    if(v5r3OrGreater)                                                                           //@K1A
-        BinaryConverter.intToByteArray(607, selectionInfo, offset+36); //Sender user name       //@K1A
 
     // Setup program parameters
     ProgramParameter[] parms = new ProgramParameter[10];

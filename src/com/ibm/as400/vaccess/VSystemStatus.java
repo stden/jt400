@@ -238,7 +238,8 @@ public class VSystemStatus implements VNode, Serializable //@B0C
    /**
        * Constructs a VSystemStatus object.
        *
-       * @param systemStatus The underlying system status object.
+       * @param parent The parent.
+       * @param system The AS/400 system from which the user will be retrieved.
        * @exception AS400Exception If the AS/400 system returns an error
                     message.
        * @exception AS400SecurityException If a security or authority error
@@ -542,7 +543,7 @@ public class VSystemStatus implements VNode, Serializable //@B0C
    /**
     * Returns a property value.
     *
-    * @param  object  The property identifier.
+    * @param  propertyIdentifier  The property identifier.
     * @return                     The property value, or null if the
     *                             property identifier is not recognized.
    **/
@@ -790,7 +791,7 @@ public class VSystemStatus implements VNode, Serializable //@B0C
    /**
     * Set the state of modify action of all the pools.
     *
-    * @param allow The boolean value.
+    * @param allowModify The boolean value.
    **/
    public void setAllowModifyAllPools(boolean allow)
    {

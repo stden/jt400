@@ -178,7 +178,7 @@ public class HTMLImage extends HTMLTagAttributes implements HTMLConstants, java.
     /**
      *  Sets the <i>width</i> of the image in pixels.
      *
-     *  @return The width.
+     *  @param width The Width
      **/
     public int getWidth()
     {

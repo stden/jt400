@@ -893,7 +893,7 @@ public class AS400JDBCRowSet extends Object implements RowSet, Serializable     
     *
     *  <p>This can also be used to get values from columns
     *  with other types.  The values are returned in their
-    *  native i5/OS format.  This is not supported for
+    *  native OS/400 format.  This is not supported for
     *  result sets returned by a DatabaseMetaData object.
     *
     *  @param  columnIndex     The column index (1-based).
@@ -919,7 +919,7 @@ public class AS400JDBCRowSet extends Object implements RowSet, Serializable     
     *
     *  <p>This can also be used to get values from columns
     *  with other types.  The values are returned in their
-    *  native i5/OS format.  This is not supported for
+    *  native OS/400 format.  This is not supported for
     *  result sets returned by a DatabaseMetaData object.
     *
     *  @param  columnName  The column name.
@@ -3165,7 +3165,7 @@ public class AS400JDBCRowSet extends Object implements RowSet, Serializable     
     *  Sets the URL used for getting a connection.
     *  Either this property or the dataSource property must be set before a connection can be made.
     *  This sets setUseDataSource to false.
-    *  @param url The URL.
+    *  @param The URL.
     *  @see #setUseDataSource
     **/
     public void setUrl(String url)
@@ -3239,7 +3239,7 @@ public class AS400JDBCRowSet extends Object implements RowSet, Serializable     
     DB2 UDB for iSeries does not support arrays.
     
     @param  columnIndex   The column index (1-based).
-    @param  columnValue   The column value or null if the value is SQL NULL.
+    @return               The column value or null if the value is SQL NULL.
     
     @exception  SQLException    Always thrown because DB2
                                 UDB for iSeries does not support arrays.
@@ -3258,8 +3258,8 @@ public class AS400JDBCRowSet extends Object implements RowSet, Serializable     
     Updates a column in the current row using an Array value.
     DB2 UDB for iSeries does not support arrays.
     
-    @param  columnName    The column name.
-    @param  columnValue   The column value or null if the value is SQL NULL.
+    @param  columnIndex   The column name.
+    @return               The column value or null if the value is SQL NULL.
     
     @exception  SQLException    Always thrown because DB2
                                 UDB for iSeries does not support arrays.
@@ -4267,7 +4267,7 @@ public class AS400JDBCRowSet extends Object implements RowSet, Serializable     
     Updates a column in the current row using an Ref value.
     DB2 UDB for iSeries does not support structured types.
        
-    @param  columnName      The column name.
+    @param  columnIndex     The column name.
     @param  columnValue     The column value or null to update
                             the value to SQL NULL.
     @return                 The parameter value or 0 if the value is SQL NULL.

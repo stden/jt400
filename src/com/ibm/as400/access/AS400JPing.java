@@ -386,7 +386,7 @@ public class AS400JPing
    /**
     *  Set the PrintWriter to log ping information to.
     *
-    *  @param stream The OutputStream.
+    *  @param OutputStream The OutputStream.
     *
     *  @exception  IOException  If an error occurs while accessing the stream. 
     *

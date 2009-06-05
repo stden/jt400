@@ -14,17 +14,15 @@
 package com.ibm.as400.access;
 
 /**
- *  Provides a composite data type representing a structure of AS400DataType objects.
+ *  The AS400Structure class provides a composite data type representing a structure of AS400DataType objects.
  **/
 public class AS400Structure implements AS400DataType
 {
     static final long serialVersionUID = 4L;
 
     private AS400DataType[] elements_ = null;
-    private transient Object elementsLock_;
-
-    private transient Object[] defaultValue_;
-
+    private static Object[] defaultValue_ = null;
+    private static final Object defaultValueLock_ = new Object();
     private boolean allowChanges_ = true;  // For beans: allow changes after null constructor until conversion method called
 
     /**
@@ -32,7 +30,6 @@ public class AS400Structure implements AS400DataType
      **/
     public AS400Structure()
     {
-      initializeTransient();
     }
 
     /**
@@ -41,16 +38,14 @@ public class AS400Structure implements AS400DataType
      **/
     public AS400Structure(AS400DataType[] members)
     {
-     if (members == null) throw new NullPointerException("members");
-     initializeTransient();
-     AS400DataType[] newMembers = new AS400DataType[members.length];
+     AS400DataType[] newMembers = new AS400DataType[members.length];  // let this line throw NullPointerException
      for (int i=0; i<members.length; ++i)
      {
          // store only clones
-         newMembers[i] = (AS400DataType)members[i].clone();
+         newMembers[i] = (AS400DataType)members[i].clone();  // let this line throw NullPointerException
      }
-     allowChanges_ = false;
-     elements_ = newMembers;
+     this.allowChanges_ = false;
+     this.elements_ = newMembers;
     }
 
     /**
@@ -62,21 +57,19 @@ public class AS400Structure implements AS400DataType
      try
      {
          AS400Structure nObj = (AS400Structure)super.clone();  // Object.clone does not throw exception
+         AS400DataType[] myMembers = this.elements_;
 
-         if (elements_ == null) return nObj;  // Short cut out if nothing to clone
+         if (myMembers == null) return nObj;  // Short cut out if nothing to clone
 
-         synchronized (elementsLock_)
+         // Create new array for clone
+         AS400DataType[] newMembers = new AS400DataType[myMembers.length];
+         for (int i=0; i<myMembers.length; ++i)
          {
-           // Create new array for clone
-           AS400DataType[] newMembers = new AS400DataType[elements_.length];
-           for (int i=0; i<elements_.length; ++i)
-           {
-             // clone all the elements
-             newMembers[i] = (AS400DataType)elements_[i].clone(); // Data Types do not throw exception
-           }
-           nObj.elements_ = newMembers;
-           return nObj;
+          // clone all the elements
+          newMembers[i] = (AS400DataType)myMembers[i].clone(); // Data Types do not throw exception
          }
+         nObj.elements_ = newMembers;
+         return nObj;
      }
      catch (CloneNotSupportedException e)
      {
@@ -91,24 +84,22 @@ public class AS400Structure implements AS400DataType
      **/
     public int getByteLength()
     {
-      // Check for valid state
-      if (elements_ == null)
-      {
-        throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
-      }
+     AS400DataType[] elementIterator = this.elements_;
+     // Check for valid state
+     if (elementIterator == null)
+     {
+         throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
+     }
+     this.allowChanges_ = false;  // Check before setting so don't have unfixable object
 
-      synchronized (elementsLock_)
-      {
-        allowChanges_ = false;  // Check before setting so don't have unfixable object
-
-        // Length is sum of the elements length
-        int totalSize = 0;
-        for (int i = 0; i < elements_.length; ++i)
-        {
-          totalSize += elements_[i].getByteLength();
-        }
-        return totalSize;
-      }
+     // Length is sum of the elements length
+     int numElements = elementIterator.length;
+     int totalSize = 0;
+     for (int i = 0; i < numElements; ++i)
+     {
+         totalSize += elementIterator[i].getByteLength();
+     }
+     return totalSize;
     }
 
     /**
@@ -117,18 +108,22 @@ public class AS400Structure implements AS400DataType
      **/
     public Object getDefaultValue()
     {
-      synchronized (elementsLock_)
+      if (defaultValue_ == null)
       {
-        if (defaultValue_ == null)
+        synchronized (defaultValueLock_)
         {
-          int numElements = elements_.length;
-          defaultValue_ = new Object[numElements];
-          for (int i = 0; i < numElements; i++) {
-            defaultValue_[i] = elements_[i].getDefaultValue();
+          if (defaultValue_ == null)
+          {
+            int numElements = elements_.length;
+            defaultValue_ = new Object[numElements];
+            for (int i = 0; i < numElements; i++) {
+              defaultValue_[i] = elements_[i].getDefaultValue();
+            }
           }
         }
-        return defaultValue_;
       }
+
+      return defaultValue_;
     }
 
 
@@ -167,19 +162,18 @@ public class AS400Structure implements AS400DataType
      **/
     public AS400DataType[] getMembers()
     {
-      if (elements_ == null) return null;  // if elements unset, return null
+     AS400DataType[] myMembers = this.elements_;
 
-      synchronized (elementsLock_)
-      {
-        // Create new array to return
-        AS400DataType[] newMembers = new AS400DataType[elements_.length];
-        for (int i=0; i<elements_.length; ++i)
-        {
-          // clone all the sub elements
-          newMembers[i] = (AS400DataType)elements_[i].clone();
-        }
-        return newMembers;
-      }
+     if (myMembers == null) return null;  // if elements unset, return null
+
+     // Create new array to return
+     AS400DataType[] newMembers = new AS400DataType[myMembers.length];
+     for (int i=0; i<myMembers.length; ++i)
+     {
+         // clone all the sub elements
+         newMembers[i] = (AS400DataType)myMembers[i].clone();
+     }
+     return newMembers;
     }
 
     /**
@@ -189,39 +183,11 @@ public class AS400Structure implements AS400DataType
      **/
     public AS400DataType getMembers(int index)
     {
-      if (elements_ == null)
-      {
-        throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
-      }
-      if (index < 0 || index >= elements_.length)
-      {
-        throw new ExtendedIllegalArgumentException("index", ExtendedIllegalArgumentException.RANGE_NOT_VALID);
-      }
-      synchronized (elementsLock_)
-      {
-        return (AS400DataType)elements_[index].clone();  // only return clones, let this line throw ArrayIndexExceptions
-      }
-    }
-
-
-    /**
-     Initialize the transient data.
-     **/
-    void initializeTransient()
-    {
-      elementsLock_ = new Object();
-      defaultValue_ = null;
-    }
-
-
-    /**
-     *Deserializes and initializes transient data.
-     */
-    private void readObject(java.io.ObjectInputStream in)
-      throws java.io.IOException, ClassNotFoundException
-    {
-      in.defaultReadObject();
-      initializeTransient();
+     if (this.elements_ == null)
+     {
+         throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
+     }
+     return (AS400DataType)this.elements_[index].clone();  // only return clones, let this line throw ArrayIndexExceptions
     }
 
     /**
@@ -230,23 +196,17 @@ public class AS400Structure implements AS400DataType
      **/
     public void setMembers(AS400DataType[] members)
     {
-     if (members == null) throw new NullPointerException("members");
-     if (!allowChanges_)
+     if (!this.allowChanges_)
      {
          throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_CHANGED);
      }
-     AS400DataType[] newMembers = new AS400DataType[members.length];
+     AS400DataType[] newMembers = new AS400DataType[members.length];  // let this line throw NullPointerException
      for (int i=0; i<members.length; ++i)
      {
          // only store clones
-         newMembers[i] = (AS400DataType)members[i].clone();
+         newMembers[i] = (AS400DataType)members[i].clone();  // let this line throw NullPointerException
      }
-
-     synchronized (elementsLock_)
-     {
-       elements_ = newMembers;
-       defaultValue_ = null;  // discard any previous default value
-     }
+     this.elements_ = newMembers;
     }
 
     /**
@@ -256,28 +216,16 @@ public class AS400Structure implements AS400DataType
      **/
     public void setMembers(int index, AS400DataType member)
     {
-     if (member == null) throw new NullPointerException("member");
-     // check state
-     if (elements_ == null)
-     {
-       throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
-     }
-     if (index < 0 || index >= elements_.length)
-     {
-       throw new ExtendedIllegalArgumentException("index", ExtendedIllegalArgumentException.RANGE_NOT_VALID);
-     }
-     if (!allowChanges_)
+     if (!this.allowChanges_)
      {
          throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_CHANGED);
      }
-
-     synchronized (elementsLock_)
+     // check state
+     if (this.elements_ == null)
      {
-       elements_[index] = (AS400DataType)member.clone();  // only store clones, let this line throw ArrayIndexException
-       if (defaultValue_ != null) {
-         defaultValue_[index] = elements_[index].getDefaultValue();
-       }
+         throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
      }
+     this.elements_[index] = (AS400DataType)member.clone();  // only store clones, let this line throw ArrayIndexException
     }
 
     /**
@@ -287,8 +235,8 @@ public class AS400Structure implements AS400DataType
      **/
     public byte[] toBytes(Object javaValue)
     {
-     byte[] as400Value = new byte[getByteLength()];  // let getByteLength check state
-     toBytes(javaValue, as400Value, 0);
+     byte[] as400Value = new byte[this.getByteLength()];  // let getByteLength check state
+     this.toBytes(javaValue, as400Value, 0);
      return as400Value;
     }
 
@@ -300,7 +248,7 @@ public class AS400Structure implements AS400DataType
      **/
     public int toBytes(Object javaValue, byte[] as400Value)
     {
-     return toBytes(javaValue, as400Value, 0);
+     return this.toBytes(javaValue, as400Value, 0);
     }
 
     /**
@@ -312,30 +260,28 @@ public class AS400Structure implements AS400DataType
      **/
     public int toBytes(Object javaValue, byte[] as400Value, int offset)
     {
-      // Check for valid state
-      if (elements_ == null)
-      {
-        throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
-      }
+     AS400DataType[] elementIterator = this.elements_;
 
-      synchronized (elementsLock_)
-      {
-        allowChanges_ = false;  // Check before setting so don't have unfixable object
+     // Check for valid state
+     if (elementIterator == null)
+     {
+         throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
+     }
+     this.allowChanges_ = false;;  // Check before setting so don't have unfixable object
 
-        int numElements = elements_.length;
-        Object[] arrayValue = (Object[])javaValue;  // let this line to throw ClassCastException
-        if (arrayValue.length != numElements)  // Check for correct number of elements
-        {
-          throw new ExtendedIllegalArgumentException("javaValue (" + javaValue.toString() + ")", ExtendedIllegalArgumentException.LENGTH_NOT_VALID);
-        }
+     int numElements = elementIterator.length;
+     Object[] arrayValue = (Object[])javaValue;  // let this line to throw ClassCastException
+     if (arrayValue.length != numElements)  // Check for correct number of elements
+     {
+         throw new ExtendedIllegalArgumentException("javaValue (" + javaValue.toString() + ")", ExtendedIllegalArgumentException.LENGTH_NOT_VALID);
+     }
 
-        // Convert structure by iterating over elements, allow elements to do own validity checking
-        for (int i = 0; i < numElements; ++i)
-        {
-          offset += elements_[i].toBytes(arrayValue[i], as400Value, offset);
-        }
-        return getByteLength();
-      }
+     // Convert structure by iterating over elements, allow elements to do own validity checking
+     for (int i = 0; i < numElements; ++i)
+     {
+         offset += elementIterator[i].toBytes(arrayValue[i], as400Value, offset);
+     }
+     return this.getByteLength();
     }
 
     /**
@@ -345,7 +291,7 @@ public class AS400Structure implements AS400DataType
      **/
     public Object toObject(byte[] as400Value)
     {
-     return toObject(as400Value, 0);
+     return this.toObject(as400Value, 0);
     }
 
     /**
@@ -356,26 +302,23 @@ public class AS400Structure implements AS400DataType
      **/
     public Object toObject(byte[] as400Value, int offset)
     {
-      // Check for valid state
-      if (elements_ == null)
-      {
-        throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
-      }
+     AS400DataType[] elementIterator = this.elements_;
+     // Check for valid state
+     if (elementIterator == null)
+     {
+         throw new ExtendedIllegalStateException("Members", ExtendedIllegalStateException.PROPERTY_NOT_SET);
+     }
+     this.allowChanges_ = false;  // Check before setting so don't have unfixable object
+     int numElements = elementIterator.length;
 
-      synchronized (elementsLock_)
-      {
-        allowChanges_ = false;  // Check before setting so don't have unfixable object
-        int numElements = elements_.length;
+     Object[] returnArray = new Object[numElements];
 
-        Object[] returnArray = new Object[numElements];
-
-        // Convert structure by iterating over elements, allow elements to do own validity checking
-        for (int i = 0; i < numElements; ++i)
-        {
-          returnArray[i] = elements_[i].toObject(as400Value, offset);
-          offset += elements_[i].getByteLength();
-        }
-        return returnArray;
-      }
+     // Convert structure by iterating over elements, allow elements to do own validity checking
+     for (int i = 0; i < numElements; ++i)
+     {
+         returnArray[i] = elementIterator[i].toObject(as400Value, offset);
+         offset += elementIterator[i].getByteLength();
+     }
+     return returnArray;
     }
 }

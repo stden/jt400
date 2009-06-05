@@ -457,7 +457,7 @@ public class CommandCall implements Serializable
     static final String getThreadSafetyProperty()
     {
       String val = SystemProperties.getProperty(SystemProperties.COMMANDCALL_THREADSAFE);
-      return (val == null || val.length()==0 ? null : val.toLowerCase());
+      return (val == null ? null : val.toLowerCase());
     }
 
     // Apply the value of the thread safety system property (if it has been set).
@@ -472,13 +472,13 @@ public class CommandCall implements Serializable
       }
       else
       {
-        if (property.equals("true")) {
+        if (property.equalsIgnoreCase("true")) {
           threadSafety_valueToUse_ = THREADSAFE_TRUE;
         }
-        else if (property.equals("false")) {
+        else if (property.equalsIgnoreCase("false")) {
           threadSafety_valueToUse_ = THREADSAFE_FALSE;
         }
-        else if (property.equals("lookup")) {
+        else if (property.equalsIgnoreCase("lookup")) {
           threadSafety_valueToUse_ = THREADSAFE_LOOKUP;
           threadSafetyIsLookedUp_ = true;
         }
@@ -580,7 +580,7 @@ public class CommandCall implements Serializable
             // Disregard any previous settings, since they were derived from properties.
             threadSafety_valueToUse_ = THREADSAFE_FALSE;
             threadSafetyIsLookedUp_ = false;
-            String property = getThreadSafetyProperty();
+            String property = SystemProperties.getProperty(SystemProperties.COMMANDCALL_THREADSAFE);
             if (property == null) // The property is not set in the current environment.
             {
                 threadSafety_howSpecified_ = UNSPECIFIED;
@@ -944,16 +944,14 @@ public class CommandCall implements Serializable
 
     /**
      Specifies whether or not the command should be assumed to be thread-safe.
-     If the system property <tt>com.ibm.as400.access.CommandCall.threadSafe</tt> has been set
-     to a value other than "lookup", this method does nothing.
-     This method is typically used in order to suppress runtime lookups of
-     the CL command's "Threadsafe Indicator" attribute.
+     If the "threadSafe" system property has been set to a value other than "lookup", this method does nothing.
+     This method is typically called in order to suppress runtime lookups of the command's "Threadsafe Indicator" attribute on the system, when the threadSafe property has been set to "lookup".
      @param  threadSafe  true if the command should be assumed to be thread-safe; false if the command should be assumed to be not thread-safe.
      **/
     public void suggestThreadsafe(boolean threadSafe)
     {
       String property = getThreadSafetyProperty();
-      if (property == null || property.equals("lookup"))
+      if (property == null || property.equalsIgnoreCase("lookup"))
       {
         setThreadSafe(Boolean.valueOf(threadSafe));
       }

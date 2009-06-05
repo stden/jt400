@@ -453,8 +453,7 @@ public class ProgramCall implements Serializable
 
     static String getThreadSafetyProperty()
     {
-        String val = SystemProperties.getProperty(SystemProperties.PROGRAMCALL_THREADSAFE);
-        return (val == null || val.length()==0 ? null : val.toLowerCase());
+        return SystemProperties.getProperty(SystemProperties.PROGRAMCALL_THREADSAFE);
     }
 
     // Check thread safety system property.
@@ -467,7 +466,7 @@ public class ProgramCall implements Serializable
         }
         else
         {
-          threadSafety_ = (property.equals("true") ? THREADSAFE_TRUE : THREADSAFE_FALSE);
+          threadSafety_ = (property.equalsIgnoreCase("true") ? THREADSAFE_TRUE : THREADSAFE_FALSE);
           threadSafetyDetermined_ = BY_PROPERTY;
           if (Trace.traceOn_) Trace.log(Trace.DIAGNOSTIC, "Thread safe system property: " +  property);
         }
@@ -517,7 +516,7 @@ public class ProgramCall implements Serializable
         // See if this object was serialized when its thread-safe behavior was determined by a system property (and not explicitly specified by setThreadSafe()).  This property may have since changed, so we want to reflect the current property.
         if (threadSafetyDetermined_ != BY_SET_METHOD)
         {
-            String property = getThreadSafetyProperty();
+            String property = SystemProperties.getProperty(SystemProperties.PROGRAMCALL_THREADSAFE);
             if (property == null)  // Property is not set.
             {
                 threadSafety_ = THREADSAFE_FALSE;
@@ -526,7 +525,7 @@ public class ProgramCall implements Serializable
             }
             else
             {
-                threadSafety_ = (property.equals("true") ? THREADSAFE_TRUE : THREADSAFE_FALSE);
+                threadSafety_ = (property.equalsIgnoreCase("true") ? THREADSAFE_TRUE : THREADSAFE_FALSE);
                 threadSafetyDetermined_ = BY_PROPERTY;
                 if (Trace.traceOn_) Trace.log(Trace.DIAGNOSTIC, "Thread safe system property: " + property);
             }
@@ -834,19 +833,20 @@ public class ProgramCall implements Serializable
         threadSafetyDetermined_ = BY_SET_METHOD;
     }
 
-    /**
-     Specifies that the called program should be assumed to be thread-safe.
-     If the system property <tt>com.ibm.as400.access.ProgramCall.threadSafe</tt> has been set,
-     this method does nothing.
-     **/
-    public void suggestThreadsafe()
-    {
-      // Note: Unlike with CL commands, there's no way for us to lookup the threadsafety of an API.
-      if (getThreadSafetyProperty() == null)
-      {
-        setThreadSafe(true);
-      }
-    }
+    // This method is inappropriate for ProgramCall, since threadsafety can't be looked-up for API's.
+//    /**
+//     Specifies that the program should be assumed to be thread-safe.
+//     If the "threadSafe" system property has been set, this method does nothing.
+//     **/
+//    public void suggestThreadsafe()
+//    {
+//      String property = getThreadSafetyProperty();
+//      // Note: Unlike with CL commands, there's no way to lookup the threadsafety of an API.
+//      if (property == null)
+//      {
+//        setThreadSafe(true);
+//      }
+//    }
 
     /**
      Returns the string representation of this program call object.

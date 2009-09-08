@@ -621,8 +621,7 @@ public class AS400JDBCArrayResultSet implements ResultSet
 
     /**
     Returns the ResultSetMetaData object that describes the
-    result set's columns.  ResultSetMetadata on Array columns is not supported and the
-    getMetaData method will return null.
+    result set's columns.
     
     @return     The metadata object.
     
@@ -630,8 +629,7 @@ public class AS400JDBCArrayResultSet implements ResultSet
     **/
     public java.sql.ResultSetMetaData getMetaData () throws java.sql.SQLException
     {
-        java.sql.ResultSetMetaData metaData = null;//new AS400JDBCResultSetMetaData ("", 2, "", new JDSimpleRow(new String[0], new SQLData[0], new int[0]), null, null, null); //@arrmd
-             
+        java.sql.ResultSetMetaData metaData = null;
         if (JDTrace.isTraceOn()) JDTrace.logInformation(this, "getMetaData");
         checkForClosedResultSet ();
         return metaData;
